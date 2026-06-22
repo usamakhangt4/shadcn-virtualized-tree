@@ -69,12 +69,8 @@ export function useTree<T = unknown>(options: UseTreeOptions<T>) {
       let parentId = indexes.parentMap.get(id);
       while (parentId) {
         const parent = indexes.nodeMap.get(parentId);
-        const enabledChildren = parent?.children?.filter(child => !child.disabled) ?? [];
-        if (selecting && enabledChildren.length > 0 && enabledChildren.every(child => next.has(child.id))) {
-          next.add(parentId);
-        } else {
-          next.delete(parentId);
-        }
+        if (selecting && !parent?.disabled) next.add(parentId);
+        else next.delete(parentId);
         parentId = indexes.parentMap.get(parentId);
       }
     }

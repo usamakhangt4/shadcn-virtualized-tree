@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { AlignJustify, Cloud, Database, FileText, Image, List, Menu, MousePointer2 } from "lucide-react";
+import { FaCheck, FaChevronRight, FaFolder, FaFolderOpen, FaGripVertical, FaRegFile, FaSpinner } from "react-icons/fa6";
+import { MdAutorenew, MdCheck, MdChevronRight, MdDragIndicator, MdFolder, MdFolderOpen, MdInsertDriveFile } from "react-icons/md";
 import { useTree, VirtualizedTree, type TreeNode } from "shadcn-virtualized-tree";
 import "../../src/styles.css";
 import "./playground.css";
@@ -50,6 +52,7 @@ function Playground() {
   const [radius, setRadius] = useState<"none" | "medium" | "full">("medium");
   const [indent, setIndent] = useState(20);
   const [overscan, setOverscan] = useState(6);
+  const [iconLibrary, setIconLibrary] = useState<"lucide" | "material" | "fontawesome">("lucide");
 
   const onExpandedChange = (next: Set<string>) => {
     setExpanded(next);
@@ -81,6 +84,10 @@ function Playground() {
     purple: { accent: "#7c3aed", focusRing: "#8b5cf6", selectedForeground: "#c4b5fd", selectedBackground: "#7c3aed2e", dropBackground: "#7c3aed3d" },
     orange: { accent: "#ea580c", focusRing: "#f97316", selectedForeground: "#fdba74", selectedBackground: "#ea580c2e", dropBackground: "#ea580c3d" },
   };
+  const iconSets = {
+    material: { check: MdCheck, chevron: MdChevronRight, file: MdInsertDriveFile, folder: MdFolder, folderOpen: MdFolderOpen, grip: MdDragIndicator, loader: MdAutorenew },
+    fontawesome: { check: FaCheck, chevron: FaChevronRight, file: FaRegFile, folder: FaFolder, folderOpen: FaFolderOpen, grip: FaGripVertical, loader: FaSpinner },
+  };
 
   return <main className={`app-shell theme-${theme}`}>
     <section className="stage">
@@ -95,6 +102,7 @@ function Playground() {
           viewportPadding={8}
           rowRadius={radius}
           theme={treeThemes[theme]}
+          icons={iconLibrary === "lucide" ? undefined : iconSets[iconLibrary]}
           showIcons={showIcons}
           showCheckboxes={checkboxes}
           enableOrdering={ordering}
@@ -120,6 +128,7 @@ function Playground() {
       <SettingsGroup title="Appearance" description="Defaults are optional and completely replaceable.">
         <Control label="Folder and file icons" checked={showIcons} setChecked={setShowIcons} />
         <Control label="Secondary labels" checked={showSecondary} setChecked={setShowSecondary} />
+        <IconLibraryChoice value={iconLibrary} setValue={setIconLibrary} />
         <ColorChoice value={theme} setValue={setTheme} />
         <RadiusChoice value={radius} setValue={setRadius} />
         <DensityChoice value={density} setValue={setDensity} />
@@ -143,6 +152,11 @@ function Control({ label, checked, setChecked, disabled = false }: { label: stri
 
 function ColorChoice({ value, setValue }: { value: "blue" | "purple" | "orange"; setValue: (value: "blue" | "purple" | "orange") => void }) {
   return <VisualSetting label="Color"><div className="visual-options color-options">{(["blue", "purple", "orange"] as const).map(option => <button aria-label={`${option} color`} aria-pressed={value === option} className={value === option ? "selected" : ""} onClick={() => setValue(option)} key={option}><i className={`swatch swatch-${option}`} /></button>)}</div></VisualSetting>;
+}
+
+function IconLibraryChoice({ value, setValue }: { value: "lucide" | "material" | "fontawesome"; setValue: (value: "lucide" | "material" | "fontawesome") => void }) {
+  const labels = { lucide: "Lucide", material: "Material", fontawesome: "Font Awesome" };
+  return <VisualSetting label="Icon library"><div className="library-options">{(["lucide", "material", "fontawesome"] as const).map(option => <button aria-pressed={value === option} className={value === option ? "selected" : ""} onClick={() => setValue(option)} key={option}>{labels[option]}</button>)}</div></VisualSetting>;
 }
 
 function RadiusChoice({ value, setValue }: { value: "none" | "medium" | "full"; setValue: (value: "none" | "medium" | "full") => void }) {
