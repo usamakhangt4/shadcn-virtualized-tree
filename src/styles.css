@@ -16,6 +16,8 @@
 .svt-toggle { display: grid; width: 1.25rem; height: 1.25rem; place-items: center; flex: none; padding: 0; color: inherit; background: transparent; border: 0; cursor: pointer; }
 .svt-toggle-hidden { visibility: hidden; }
 .svt-toggle svg { transition: transform 150ms ease; }
+.svt-loader { animation: svt-spin .8s linear infinite; }
+@keyframes svt-spin { to { transform: rotate(360deg); } }
 .svt-chevron-expanded { transform: rotate(90deg); }
 .svt-icon { flex: none; margin-inline: .25rem .5rem; }
 .svt-checkbox { order: -1; display: grid; width: 1rem; height: 1rem; place-items: center; flex: none; margin-right: .5rem; border: 1px solid hsl(215 16% 47%); border-radius: .2rem; }

@@ -1,4 +1,4 @@
-import { Check, ChevronRight, File, Folder, FolderOpen, GripVertical } from "lucide-react";
+import { Check, ChevronRight, File, Folder, FolderOpen, GripVertical, LoaderCircle } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import type { TreeApi } from "./use-tree";
 
@@ -17,6 +17,7 @@ export interface VirtualizedTreeProps<T> {
   onActivate?: (id: string) => void;
   showCheckboxes?: boolean;
   enableOrdering?: boolean;
+  loadingIds?: ReadonlySet<string>;
 }
 
 export function VirtualizedTree<T>({
@@ -34,6 +35,7 @@ export function VirtualizedTree<T>({
   onActivate,
   showCheckboxes = false,
   enableOrdering = false,
+  loadingIds,
 }: VirtualizedTreeProps<T>) {
   const reactId = useId().replace(/:/g, "");
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -93,6 +95,7 @@ export function VirtualizedTree<T>({
           const expandable = Boolean(node.children?.length || node.childrenCount);
           const Icon = expandable ? (expanded ? FolderOpen : Folder) : (node.icon ?? File);
           const dropPosition = dropTarget?.id === node.id ? dropTarget.position : null;
+          const loading = loadingIds?.has(node.id) ?? false;
           return (
             <div
               id={`${reactId}-${node.id}`}
@@ -141,11 +144,14 @@ export function VirtualizedTree<T>({
               <button
                 type="button"
                 tabIndex={-1}
-                aria-label={expanded ? "Collapse" : "Expand"}
+                aria-label={loading ? "Loading children" : expanded ? "Collapse" : "Expand"}
                 className={`svt-toggle${expandable ? "" : " svt-toggle-hidden"}`}
-                onClick={event => { event.stopPropagation(); if (expandable) tree.toggleExpanded(node.id); }}
+                disabled={loading}
+                onClick={event => { event.stopPropagation(); if (expandable && !loading) tree.toggleExpanded(node.id); }}
               >
-                <ChevronRight className={expanded ? "svt-chevron-expanded" : ""} size={14} />
+                {loading
+                  ? <LoaderCircle className="svt-loader" size={14} />
+                  : <ChevronRight className={expanded ? "svt-chevron-expanded" : ""} size={14} />}
               </button>
               {showIcons && <Icon className="svt-icon" size={16} />}
               {showCheckboxes && <span aria-hidden className={`svt-checkbox${selected ? " svt-checkbox-checked" : ""}`}>{selected && <Check size={12} />}</span>}

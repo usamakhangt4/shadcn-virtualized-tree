@@ -10,7 +10,6 @@ button { font: inherit; }
 .tree-card header { display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 16px; }
 .tree-card header div { display: flex; flex-direction: column; gap: 3px; }
 .tree-card header span { color: #718096; font-size: 12px; }
-.loading { color: #60a5fa !important; }
 .svt-viewport { border-radius: 10px; background: #0d131d; }
 .svt-row-selected { color: color-mix(in srgb, var(--accent), white 35%); background: var(--accent-soft); }
 .svt-row-active { box-shadow: inset 0 0 0 1px var(--accent); }
@@ -33,6 +32,15 @@ aside p:not(.eyebrow) { color: #7f8da3; font-size: 13px; line-height: 1.5; }
 .switch i { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: white; transition: transform .15s; }
 .switch.on i { transform: translateX(16px); }
 .vertical { align-items: stretch; flex-direction: column; gap: 8px; }
+.visual-setting { display: flex; flex-direction: column; gap: 9px; color: #7791b8; font-size: 13px; }
+.visual-options { display: flex; gap: 10px; }
+.visual-options button { display: grid; width: 42px; height: 40px; place-items: center; padding: 0; color: #718096; border: 1px solid transparent; border-radius: 11px; background: #111a2c; cursor: pointer; }
+.visual-options button:hover { color: #aebbd0; background: #172238; }
+.visual-options button.selected { color: #c8d5e8; border-color: color-mix(in srgb, var(--accent), white 20%); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent), transparent 30%); }
+.color-options button { width: 56px; height: 34px; border-radius: 999px; }
+.swatch { width: 31px; height: 9px; border-radius: 999px; }.swatch-blue { background: #2563eb; }.swatch-purple { background: #7c5cf5; }.swatch-orange { background: #ff681f; }
+.corner { width: 19px; height: 19px; border-top: 2px solid currentColor; border-left: 2px solid currentColor; }.corner-none { border-radius: 0; }.corner-medium { border-top-left-radius: 5px; }.corner-full { border-top-left-radius: 15px; }
+.density-options button { width: 42px; }
 .segments { display: flex; padding: 3px; border-radius: 8px; background: #111927; }
 .segments button { flex: 1; padding: 6px 7px; color: #718096; border: 0; border-radius: 6px; background: transparent; font-size: 10px; cursor: pointer; text-transform: capitalize; }
 .segments button.active { color: #fff; }

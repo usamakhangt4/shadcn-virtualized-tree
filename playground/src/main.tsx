@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Cloud, Database, FileText, Image, MousePointer2 } from "lucide-react";
+import { AlignJustify, Cloud, Database, FileText, Image, List, Menu, MousePointer2 } from "lucide-react";
 import { useTree, VirtualizedTree, type TreeNode } from "shadcn-virtualized-tree";
 import "../../src/styles.css";
 import "./playground.css";
@@ -80,7 +80,7 @@ function Playground() {
   return <main className={`app-shell theme-${theme}`}>
     <section className="stage">
       <div className="tree-card">
-        <header><div><strong>Project structure</strong><span>{tree.flatNodes.length.toLocaleString()} visible nodes</span></div>{loading.size > 0 && <span className="loading">Loading cloud…</span>}</header>
+        <header><div><strong>Project structure</strong><span>{tree.flatNodes.length.toLocaleString()} visible nodes</span></div></header>
         <VirtualizedTree
           tree={tree}
           height={560}
@@ -92,6 +92,7 @@ function Playground() {
           showIcons={showIcons}
           showCheckboxes={checkboxes}
           enableOrdering={ordering}
+          loadingIds={loading}
           renderLabel={node => <>
             <span>{node.label}</span>
             {showSecondary && <small>{node.children?.length || node.childrenCount ? "Group" : "Item"}</small>}
@@ -113,9 +114,9 @@ function Playground() {
       <SettingsGroup title="Appearance" description="Defaults are optional and completely replaceable.">
         <Control label="Folder and file icons" checked={showIcons} setChecked={setShowIcons} />
         <Control label="Secondary labels" checked={showSecondary} setChecked={setShowSecondary} />
-        <Choice label="Theme" value={theme} values={["blue", "purple", "orange"]} setValue={value => setTheme(value as typeof theme)} />
-        <Choice label="Radius" value={radius} values={["none", "medium", "full"]} setValue={value => setRadius(value as typeof radius)} />
-        <Choice label="Density" value={density} values={["compact", "normal", "relaxed"]} setValue={value => setDensity(value as typeof density)} />
+        <ColorChoice value={theme} setValue={setTheme} />
+        <RadiusChoice value={radius} setValue={setRadius} />
+        <DensityChoice value={density} setValue={setDensity} />
       </SettingsGroup>
       <SettingsGroup title="Virtualization" description="Tune rendering for the size and shape of your data.">
         <Range label="Indent" value={indent} min={12} max={32} suffix="px" setValue={setIndent} />
@@ -134,8 +135,21 @@ function Control({ label, checked, setChecked, disabled = false }: { label: stri
   return <label className={`control${disabled ? " disabled" : ""}`}><span>{label}</span><button disabled={disabled} role="switch" aria-checked={checked} className={checked ? "switch on" : "switch"} onClick={() => setChecked(!checked)}><i /></button></label>;
 }
 
-function Choice({ label, value, values, setValue }: { label: string; value: string; values: string[]; setValue: (value: string) => void }) {
-  return <div className="setting vertical"><span>{label}</span><div className="segments">{values.map(option => <button className={value === option ? "active" : ""} onClick={() => setValue(option)} key={option}>{option}</button>)}</div></div>;
+function ColorChoice({ value, setValue }: { value: "blue" | "purple" | "orange"; setValue: (value: "blue" | "purple" | "orange") => void }) {
+  return <VisualSetting label="Color"><div className="visual-options color-options">{(["blue", "purple", "orange"] as const).map(option => <button aria-label={`${option} color`} aria-pressed={value === option} className={value === option ? "selected" : ""} onClick={() => setValue(option)} key={option}><i className={`swatch swatch-${option}`} /></button>)}</div></VisualSetting>;
+}
+
+function RadiusChoice({ value, setValue }: { value: "none" | "medium" | "full"; setValue: (value: "none" | "medium" | "full") => void }) {
+  return <VisualSetting label="Border radius"><div className="visual-options shape-options">{(["none", "medium", "full"] as const).map(option => <button aria-label={`${option} row radius`} aria-pressed={value === option} className={value === option ? "selected" : ""} onClick={() => setValue(option)} key={option}><i className={`corner corner-${option}`} /></button>)}</div></VisualSetting>;
+}
+
+function DensityChoice({ value, setValue }: { value: "compact" | "normal" | "relaxed"; setValue: (value: "compact" | "normal" | "relaxed") => void }) {
+  const icons = { compact: AlignJustify, normal: Menu, relaxed: List };
+  return <VisualSetting label="Density"><div className="visual-options density-options">{(["compact", "normal", "relaxed"] as const).map(option => { const Icon = icons[option]; return <button aria-label={`${option} density`} aria-pressed={value === option} className={value === option ? "selected" : ""} onClick={() => setValue(option)} key={option}><Icon size={19} /></button>; })}</div></VisualSetting>;
+}
+
+function VisualSetting({ label, children }: { label: string; children: React.ReactNode }) {
+  return <div className="visual-setting"><span>{label}</span>{children}</div>;
 }
 
 function Range({ label, value, min, max, suffix, setValue }: { label: string; value: number; min: number; max: number; suffix: string; setValue: (value: number) => void }) {
