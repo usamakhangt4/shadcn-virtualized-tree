@@ -1,0 +1,44 @@
+:root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #d7deea; background: #080b11; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 900px; }
+button { font: inherit; }
+.app-shell { --accent: #2563eb; --accent-soft: #1d4ed82e; display: grid; grid-template-columns: minmax(560px, 1fr) 360px; min-height: 100vh; }
+.theme-purple { --accent: #7c3aed; --accent-soft: #7c3aed2e; }
+.theme-orange { --accent: #ea580c; --accent-soft: #ea580c2e; }
+.stage { display: grid; place-items: center; padding: 48px; background-color: #0b0f16; background-image: linear-gradient(#ffffff08 1px, transparent 1px), linear-gradient(90deg, #ffffff08 1px, transparent 1px); background-size: 24px 24px; }
+.tree-card { width: min(100%, 560px); padding: 12px; border: 1px solid #263042; border-radius: 16px; background: #111722; box-shadow: 0 28px 90px #0008; }
+.tree-card header { display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 16px; }
+.tree-card header div { display: flex; flex-direction: column; gap: 3px; }
+.tree-card header span { color: #718096; font-size: 12px; }
+.loading { color: #60a5fa !important; }
+.svt-viewport { border-radius: 10px; background: #0d131d; }
+.svt-viewport.radius-none { border-radius: 0; }.svt-viewport.radius-full { border-radius: 24px; }
+.svt-row-selected { color: color-mix(in srgb, var(--accent), white 35%); background: var(--accent-soft); }
+.svt-row-active { outline-color: var(--accent); }
+.svt-checkbox-checked, .segments button.active, .switch.on { background: var(--accent); }
+.svt-label { display: flex; align-items: center; gap: 8px; width: 100%; }
+.svt-label small { margin-left: auto; padding: 2px 6px; color: #718096; border-radius: 5px; background: #182131; font-size: 9px; text-transform: uppercase; }
+.node-action { margin-left: auto; padding: 3px 6px; color: #8290a5; border: 0; border-radius: 5px; background: #1a2433; font-size: 10px; cursor: pointer; }
+.node-action:hover { color: white; background: #29374b; }
+aside { display: flex; flex-direction: column; gap: 24px; max-height: 100vh; padding: 36px 28px; overflow-y: auto; border-left: 1px solid #202938; background: #0d1118; }
+.eyebrow { margin: 0 0 8px; color: #60a5fa; font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+h1 { margin: 0; font-size: 24px; }
+aside p:not(.eyebrow) { color: #7f8da3; font-size: 13px; line-height: 1.5; }
+.settings-group { display: flex; flex-direction: column; gap: 14px; padding-top: 20px; border-top: 1px solid #202938; }
+.settings-group > header { display: flex; flex-direction: column; gap: 3px; }
+.settings-group > header strong { color: #d7deea; font-size: 13px; }
+.settings-group > header span { color: #66758a; font-size: 11px; line-height: 1.4; }
+.control, .setting { display: flex; align-items: center; justify-content: space-between; color: #b8c1cf; font-size: 13px; }
+.control.disabled { opacity: .4; }
+.switch { position: relative; width: 38px; height: 22px; padding: 0; border: 0; border-radius: 999px; background: #263142; cursor: pointer; }
+.switch i { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: white; transition: transform .15s; }
+.switch.on i { transform: translateX(16px); }
+.vertical { align-items: stretch; flex-direction: column; gap: 8px; }
+.segments { display: flex; padding: 3px; border-radius: 8px; background: #111927; }
+.segments button { flex: 1; padding: 6px 7px; color: #718096; border: 0; border-radius: 6px; background: transparent; font-size: 10px; cursor: pointer; text-transform: capitalize; }
+.segments button.active { color: #fff; }
+.range { display: flex; flex-direction: column; gap: 8px; color: #b8c1cf; font-size: 13px; }
+.range span { display: flex; justify-content: space-between; }.range output { color: #718096; font-size: 11px; }
+.range input { width: 100%; accent-color: var(--accent); }
+.stats { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: auto; padding: 16px; border: 1px solid #202938; border-radius: 10px; color: #718096; font-size: 12px; }
+.stats strong { color: #d7deea; }
