@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { AlignJustify, Cloud, Database, FileText, Image, List, Menu, MousePointer2 } from "lucide-react";
 import { FaCheck, FaChevronRight, FaFolder, FaFolderOpen, FaGripVertical, FaMinus, FaRegFile, FaSpinner } from "react-icons/fa6";
@@ -53,6 +53,7 @@ function Playground() {
   const [indent, setIndent] = useState(20);
   const [overscan, setOverscan] = useState(6);
   const [iconLibrary, setIconLibrary] = useState<"lucide" | "material" | "fontawesome">("lucide");
+  const treeHeight = useResponsiveTreeHeight();
 
   const onExpandedChange = (next: Set<string>) => {
     setExpanded(next);
@@ -95,7 +96,7 @@ function Playground() {
         <header><div><strong>Project structure</strong><span>{tree.flatNodes.length.toLocaleString()} visible nodes</span></div></header>
         <VirtualizedTree
           tree={tree}
-          height={560}
+          height={treeHeight}
           rowHeight={rowHeight}
           overscan={overscan}
           indent={indent}
@@ -144,6 +145,25 @@ function Playground() {
 
 function SettingsGroup({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
   return <section className="settings-group"><header><strong>{title}</strong><span>{description}</span></header>{children}</section>;
+}
+
+function useResponsiveTreeHeight() {
+  const calculate = () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    if (width <= 640) return Math.round(Math.max(320, Math.min(480, height * .58)));
+    if (width <= 1024) return Math.round(Math.max(400, Math.min(560, height * .62)));
+    return Math.round(Math.max(460, Math.min(620, height - 160)));
+  };
+  const [height, setHeight] = useState(calculate);
+
+  useEffect(() => {
+    const update = () => setHeight(calculate());
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  return height;
 }
 
 function Control({ label, checked, setChecked, disabled = false }: { label: string; checked: boolean; setChecked: (value: boolean) => void; disabled?: boolean }) {
