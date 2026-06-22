@@ -1,4 +1,4 @@
-import { Check, ChevronRight, File, Folder, FolderOpen, GripVertical, LoaderCircle } from "lucide-react";
+import { Check, ChevronRight, File, Folder, FolderOpen, GripVertical, LoaderCircle, Minus } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ElementType, type ReactNode } from "react";
 import type { TreeApi } from "./use-tree";
 
@@ -10,6 +10,7 @@ export interface TreeIconSlots {
   folderOpen: ElementType;
   grip: ElementType;
   loader: ElementType;
+  indeterminate: ElementType;
 }
 
 export interface VirtualizedTreeTheme {
@@ -72,6 +73,7 @@ export function VirtualizedTree<T>({
     folderOpen: FolderOpen,
     grip: GripVertical,
     loader: LoaderCircle,
+    indeterminate: Minus,
     ...icons,
   };
   const CheckIcon = iconSlots.check;
@@ -81,6 +83,7 @@ export function VirtualizedTree<T>({
   const FolderOpenIcon = iconSlots.folderOpen;
   const GripIcon = iconSlots.grip;
   const LoaderIcon = iconSlots.loader;
+  const IndeterminateIcon = iconSlots.indeterminate;
   const themeStyle = {
     "--svt-background": theme?.background,
     "--svt-foreground": theme?.foreground,
@@ -148,6 +151,7 @@ export function VirtualizedTree<T>({
           const { node, depth } = item;
           const expanded = tree.expandedIds.has(node.id);
           const selected = tree.selectedIds.has(node.id);
+          const indeterminate = tree.indeterminateIds.has(node.id);
           const expandable = Boolean(node.children?.length || node.childrenCount);
           const Icon = expandable ? (expanded ? FolderOpenIcon : FolderIcon) : (node.icon ?? FileIcon);
           const dropPosition = dropTarget?.id === node.id ? dropTarget.position : null;
@@ -162,6 +166,7 @@ export function VirtualizedTree<T>({
               aria-setsize={item.setSize}
               aria-expanded={expandable ? expanded : undefined}
               aria-selected={selected}
+              aria-checked={showCheckboxes ? indeterminate ? "mixed" : selected : undefined}
               aria-disabled={node.disabled}
               draggable={enableOrdering && !node.disabled}
               className={`svt-row svt-row-radius-${rowRadius}${selected ? " svt-row-selected" : ""}${activeId === node.id ? " svt-row-active" : ""}${node.disabled ? " svt-row-disabled" : ""}${dropPosition ? ` svt-drop-${dropPosition}` : ""}`}
@@ -210,7 +215,7 @@ export function VirtualizedTree<T>({
                   : <ChevronIcon className={expanded ? "svt-chevron-expanded" : ""} size={14} />}
               </button>
               {showIcons && <Icon className="svt-icon" size={16} />}
-              {showCheckboxes && <span aria-hidden className={`svt-checkbox${selected ? " svt-checkbox-checked" : ""}`}>{selected && <CheckIcon size={12} />}</span>}
+              {showCheckboxes && <span aria-hidden className={`svt-checkbox${selected || indeterminate ? " svt-checkbox-checked" : ""}`}>{selected ? <CheckIcon size={12} /> : indeterminate ? <IndeterminateIcon size={12} /> : null}</span>}
               <span className="svt-label">{renderLabel(node)}</span>
             </div>
           );

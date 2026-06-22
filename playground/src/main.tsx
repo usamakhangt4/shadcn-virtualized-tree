@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { AlignJustify, Cloud, Database, FileText, Image, List, Menu, MousePointer2 } from "lucide-react";
-import { FaCheck, FaChevronRight, FaFolder, FaFolderOpen, FaGripVertical, FaRegFile, FaSpinner } from "react-icons/fa6";
-import { MdAutorenew, MdCheck, MdChevronRight, MdDragIndicator, MdFolder, MdFolderOpen, MdInsertDriveFile } from "react-icons/md";
+import { FaCheck, FaChevronRight, FaFolder, FaFolderOpen, FaGripVertical, FaMinus, FaRegFile, FaSpinner } from "react-icons/fa6";
+import { MdAutorenew, MdCheck, MdChevronRight, MdDragIndicator, MdFolder, MdFolderOpen, MdIndeterminateCheckBox, MdInsertDriveFile } from "react-icons/md";
 import { useTree, VirtualizedTree, type TreeNode } from "shadcn-virtualized-tree";
 import "../../src/styles.css";
 import "./playground.css";
@@ -85,8 +85,8 @@ function Playground() {
     orange: { accent: "#ea580c", focusRing: "#f97316", selectedForeground: "#fdba74", selectedBackground: "#ea580c2e", dropBackground: "#ea580c3d" },
   };
   const iconSets = {
-    material: { check: MdCheck, chevron: MdChevronRight, file: MdInsertDriveFile, folder: MdFolder, folderOpen: MdFolderOpen, grip: MdDragIndicator, loader: MdAutorenew },
-    fontawesome: { check: FaCheck, chevron: FaChevronRight, file: FaRegFile, folder: FaFolder, folderOpen: FaFolderOpen, grip: FaGripVertical, loader: FaSpinner },
+    material: { check: MdCheck, chevron: MdChevronRight, file: MdInsertDriveFile, folder: MdFolder, folderOpen: MdFolderOpen, grip: MdDragIndicator, loader: MdAutorenew, indeterminate: MdIndeterminateCheckBox },
+    fontawesome: { check: FaCheck, chevron: FaChevronRight, file: FaRegFile, folder: FaFolder, folderOpen: FaFolderOpen, grip: FaGripVertical, loader: FaSpinner, indeterminate: FaMinus },
   };
 
   return <main className={`app-shell theme-${theme}`}>

@@ -30,6 +30,22 @@ export function useTree<T = unknown>(options: UseTreeOptions<T>) {
   const selectedIds = options.selectedIds ?? internalSelected;
   const indexes = useMemo(() => indexTree(nodes), [nodes]);
   const flatNodes = useMemo(() => flattenTree(nodes, expandedIds), [nodes, expandedIds]);
+  const indeterminateIds = useMemo(() => {
+    if (!selectParents || selectionMode !== "multiple") return new Set<string>();
+    const mixed = new Set<string>();
+    const state = (node: TreeNode<T>): "checked" | "unchecked" | "mixed" => {
+      if (selectedIds.has(node.id)) return "checked";
+      const children = node.children?.filter(child => !child.disabled) ?? [];
+      if (children.length === 0) return "unchecked";
+      const childStates = children.map(state);
+      if (childStates.every(value => value === "unchecked")) return "unchecked";
+      if (childStates.every(value => value === "checked")) return "checked";
+      mixed.add(node.id);
+      return "mixed";
+    };
+    nodes.forEach(state);
+    return mixed;
+  }, [nodes, selectedIds, selectParents, selectionMode]);
 
   const commitExpanded = useCallback((next: Set<string>) => {
     if (!options.expandedIds) setInternalExpanded(next);
@@ -69,7 +85,8 @@ export function useTree<T = unknown>(options: UseTreeOptions<T>) {
       let parentId = indexes.parentMap.get(id);
       while (parentId) {
         const parent = indexes.nodeMap.get(parentId);
-        if (selecting && !parent?.disabled) next.add(parentId);
+        const enabledChildren = parent?.children?.filter(child => !child.disabled) ?? [];
+        if (selecting && !parent?.disabled && enabledChildren.length > 0 && enabledChildren.every(child => next.has(child.id))) next.add(parentId);
         else next.delete(parentId);
         parentId = indexes.parentMap.get(parentId);
       }
@@ -88,6 +105,7 @@ export function useTree<T = unknown>(options: UseTreeOptions<T>) {
     parentMap: indexes.parentMap,
     expandedIds,
     selectedIds,
+    indeterminateIds,
     toggleExpanded,
     toggleSelected,
     setExpandedIds: commitExpanded,

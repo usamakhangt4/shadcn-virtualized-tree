@@ -87,6 +87,7 @@ Lucide icons are only the defaults. Replace every structural icon with component
     check: MyCheck,
     grip: MyDragHandle,
     loader: MySpinner,
+    indeterminate: MyMinus,
   }}
 />
 ```
