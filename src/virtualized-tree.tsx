@@ -1,6 +1,29 @@
 import { Check, ChevronRight, File, Folder, FolderOpen, GripVertical, LoaderCircle } from "lucide-react";
-import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ElementType, type ReactNode } from "react";
 import type { TreeApi } from "./use-tree";
+
+export interface TreeIconSlots {
+  check: ElementType;
+  chevron: ElementType;
+  file: ElementType;
+  folder: ElementType;
+  folderOpen: ElementType;
+  grip: ElementType;
+  loader: ElementType;
+}
+
+export interface VirtualizedTreeTheme {
+  background?: string;
+  foreground?: string;
+  border?: string;
+  muted?: string;
+  hoverBackground?: string;
+  selectedBackground?: string;
+  selectedForeground?: string;
+  focusRing?: string;
+  accent?: string;
+  dropBackground?: string;
+}
 
 export interface VirtualizedTreeProps<T> {
   tree: TreeApi<T>;
@@ -18,6 +41,8 @@ export interface VirtualizedTreeProps<T> {
   showCheckboxes?: boolean;
   enableOrdering?: boolean;
   loadingIds?: ReadonlySet<string>;
+  icons?: Partial<TreeIconSlots>;
+  theme?: VirtualizedTreeTheme;
 }
 
 export function VirtualizedTree<T>({
@@ -36,7 +61,38 @@ export function VirtualizedTree<T>({
   showCheckboxes = false,
   enableOrdering = false,
   loadingIds,
+  icons,
+  theme,
 }: VirtualizedTreeProps<T>) {
+  const iconSlots: TreeIconSlots = {
+    check: Check,
+    chevron: ChevronRight,
+    file: File,
+    folder: Folder,
+    folderOpen: FolderOpen,
+    grip: GripVertical,
+    loader: LoaderCircle,
+    ...icons,
+  };
+  const CheckIcon = iconSlots.check;
+  const ChevronIcon = iconSlots.chevron;
+  const FileIcon = iconSlots.file;
+  const FolderIcon = iconSlots.folder;
+  const FolderOpenIcon = iconSlots.folderOpen;
+  const GripIcon = iconSlots.grip;
+  const LoaderIcon = iconSlots.loader;
+  const themeStyle = {
+    "--svt-background": theme?.background,
+    "--svt-foreground": theme?.foreground,
+    "--svt-border": theme?.border,
+    "--svt-muted": theme?.muted,
+    "--svt-hover-background": theme?.hoverBackground,
+    "--svt-selected-background": theme?.selectedBackground,
+    "--svt-selected-foreground": theme?.selectedForeground,
+    "--svt-focus-ring": theme?.focusRing,
+    "--svt-accent": theme?.accent,
+    "--svt-drop-background": theme?.dropBackground,
+  } as CSSProperties;
   const reactId = useId().replace(/:/g, "");
   const viewportRef = useRef<HTMLDivElement>(null);
   const [scrollTop, setScrollTop] = useState(0);
@@ -83,7 +139,7 @@ export function VirtualizedTree<T>({
       aria-activedescendant={activeId ? `${reactId}-${activeId}` : undefined}
       aria-multiselectable
       className={["svt-viewport", className].filter(Boolean).join(" ")}
-      style={{ height, ...style }}
+      style={{ height, ...themeStyle, ...style }}
       onScroll={event => setScrollTop(event.currentTarget.scrollTop)}
       onKeyDown={onKeyDown}
     >
@@ -93,7 +149,7 @@ export function VirtualizedTree<T>({
           const expanded = tree.expandedIds.has(node.id);
           const selected = tree.selectedIds.has(node.id);
           const expandable = Boolean(node.children?.length || node.childrenCount);
-          const Icon = expandable ? (expanded ? FolderOpen : Folder) : (node.icon ?? File);
+          const Icon = expandable ? (expanded ? FolderOpenIcon : FolderIcon) : (node.icon ?? FileIcon);
           const dropPosition = dropTarget?.id === node.id ? dropTarget.position : null;
           const loading = loadingIds?.has(node.id) ?? false;
           return (
@@ -140,7 +196,7 @@ export function VirtualizedTree<T>({
               }}
               onDragEnd={() => { setDraggedId(null); setDropTarget(null); }}
             >
-              {enableOrdering && <GripVertical className="svt-grip" size={14} />}
+              {enableOrdering && <GripIcon className="svt-grip" size={14} />}
               <button
                 type="button"
                 tabIndex={-1}
@@ -150,11 +206,11 @@ export function VirtualizedTree<T>({
                 onClick={event => { event.stopPropagation(); if (expandable && !loading) tree.toggleExpanded(node.id); }}
               >
                 {loading
-                  ? <LoaderCircle className="svt-loader" size={14} />
-                  : <ChevronRight className={expanded ? "svt-chevron-expanded" : ""} size={14} />}
+                  ? <LoaderIcon className="svt-loader" size={14} />
+                  : <ChevronIcon className={expanded ? "svt-chevron-expanded" : ""} size={14} />}
               </button>
               {showIcons && <Icon className="svt-icon" size={16} />}
-              {showCheckboxes && <span aria-hidden className={`svt-checkbox${selected ? " svt-checkbox-checked" : ""}`}>{selected && <Check size={12} />}</span>}
+              {showCheckboxes && <span aria-hidden className={`svt-checkbox${selected ? " svt-checkbox-checked" : ""}`}>{selected && <CheckIcon size={12} />}</span>}
               <span className="svt-label">{renderLabel(node)}</span>
             </div>
           );

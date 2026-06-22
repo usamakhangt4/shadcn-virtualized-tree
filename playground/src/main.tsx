@@ -76,6 +76,11 @@ function Playground() {
     selectParents: multiple && selectParents,
   });
   const rowHeight = { compact: 28, normal: 34, relaxed: 42 }[density];
+  const treeThemes = {
+    blue: { accent: "#2563eb", focusRing: "#3b82f6", selectedForeground: "#93c5fd", selectedBackground: "#2563eb2e", dropBackground: "#2563eb3d" },
+    purple: { accent: "#7c3aed", focusRing: "#8b5cf6", selectedForeground: "#c4b5fd", selectedBackground: "#7c3aed2e", dropBackground: "#7c3aed3d" },
+    orange: { accent: "#ea580c", focusRing: "#f97316", selectedForeground: "#fdba74", selectedBackground: "#ea580c2e", dropBackground: "#ea580c3d" },
+  };
 
   return <main className={`app-shell theme-${theme}`}>
     <section className="stage">
@@ -89,6 +94,7 @@ function Playground() {
           indent={indent}
           viewportPadding={8}
           rowRadius={radius}
+          theme={treeThemes[theme]}
           showIcons={showIcons}
           showCheckboxes={checkboxes}
           enableOrdering={ordering}

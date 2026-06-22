@@ -71,3 +71,42 @@ Selection and expansion can be controlled with `selectedIds`, `expandedIds`, and
 - Custom labels, icons, row sizing, indentation, and styling
 
 Lazy loading and drag-and-drop are intentionally application adapters rather than hard-coded network or sensor behavior. Consumers can update `nodes` after loading and call `moveNode` from the drag-and-drop system they prefer.
+
+## Icons and colors
+
+Lucide icons are only the defaults. Replace every structural icon with components from any React icon library:
+
+```tsx
+<VirtualizedTree
+  tree={tree}
+  icons={{
+    chevron: MyChevron,
+    folder: MyFolder,
+    folderOpen: MyOpenFolder,
+    file: MyFile,
+    check: MyCheck,
+    grip: MyDragHandle,
+    loader: MySpinner,
+  }}
+/>
+```
+
+Individual nodes can still provide their own `icon` component. Components receive common `size` and `className` props.
+
+Colors are arbitrary theme tokens, not a fixed preset list:
+
+```tsx
+<VirtualizedTree
+  tree={tree}
+  theme={{
+    accent: "#10b981",
+    focusRing: "#34d399",
+    selectedForeground: "#a7f3d0",
+    selectedBackground: "rgb(16 185 129 / 18%)",
+    background: "#07130f",
+    border: "#164e3d",
+  }}
+/>
+```
+
+The same values can be overridden with `--svt-*` CSS variables or ordinary CSS classes when application-level styling is preferred.
