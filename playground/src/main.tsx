@@ -87,10 +87,11 @@ function Playground() {
           rowHeight={rowHeight}
           overscan={overscan}
           indent={indent}
+          viewportPadding={8}
+          rowRadius={radius}
           showIcons={showIcons}
           showCheckboxes={checkboxes}
           enableOrdering={ordering}
-          className={`radius-${radius}`}
           renderLabel={node => <>
             <span>{node.label}</span>
             {showSecondary && <small>{node.children?.length || node.childrenCount ? "Group" : "Item"}</small>}

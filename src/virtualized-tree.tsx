@@ -11,6 +11,8 @@ export interface VirtualizedTreeProps<T> {
   style?: CSSProperties;
   showIcons?: boolean;
   indent?: number;
+  viewportPadding?: number;
+  rowRadius?: "none" | "medium" | "full";
   renderLabel?: (node: TreeApi<T>["nodes"][number]) => ReactNode;
   onActivate?: (id: string) => void;
   showCheckboxes?: boolean;
@@ -26,6 +28,8 @@ export function VirtualizedTree<T>({
   style,
   showIcons = true,
   indent = 20,
+  viewportPadding = 8,
+  rowRadius = "medium",
   renderLabel = node => node.label,
   onActivate,
   showCheckboxes = false,
@@ -37,14 +41,14 @@ export function VirtualizedTree<T>({
   const [activeId, setActiveId] = useState<string | null>(tree.flatNodes[0]?.node.id ?? null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dropTarget, setDropTarget] = useState<{ id: string; position: "before" | "inside" | "after" } | null>(null);
-  const start = Math.max(0, Math.floor(scrollTop / rowHeight) - overscan);
-  const end = Math.min(tree.flatNodes.length, Math.ceil((scrollTop + height) / rowHeight) + overscan);
+  const start = Math.max(0, Math.floor(Math.max(0, scrollTop - viewportPadding) / rowHeight) - overscan);
+  const end = Math.min(tree.flatNodes.length, Math.ceil((scrollTop + height - viewportPadding) / rowHeight) + overscan);
   const visible = tree.flatNodes.slice(start, end);
   const activeIndex = useMemo(() => tree.flatNodes.findIndex(item => item.node.id === activeId), [tree.flatNodes, activeId]);
 
   useEffect(() => {
     if (activeIndex < 0 || !viewportRef.current) return;
-    const top = activeIndex * rowHeight;
+    const top = activeIndex * rowHeight + viewportPadding;
     const bottom = top + rowHeight;
     if (top < viewportRef.current.scrollTop) viewportRef.current.scrollTop = top;
     else if (bottom > viewportRef.current.scrollTop + height) viewportRef.current.scrollTop = bottom - height;
@@ -81,7 +85,7 @@ export function VirtualizedTree<T>({
       onScroll={event => setScrollTop(event.currentTarget.scrollTop)}
       onKeyDown={onKeyDown}
     >
-      <div className="svt-spacer" style={{ height: tree.flatNodes.length * rowHeight }}>
+      <div className="svt-spacer" style={{ height: tree.flatNodes.length * rowHeight + viewportPadding * 2, marginInline: viewportPadding }}>
         {visible.map((item, offset) => {
           const { node, depth } = item;
           const expanded = tree.expandedIds.has(node.id);
@@ -101,8 +105,8 @@ export function VirtualizedTree<T>({
               aria-selected={selected}
               aria-disabled={node.disabled}
               draggable={enableOrdering && !node.disabled}
-              className={`svt-row${selected ? " svt-row-selected" : ""}${activeId === node.id ? " svt-row-active" : ""}${node.disabled ? " svt-row-disabled" : ""}${dropPosition ? ` svt-drop-${dropPosition}` : ""}`}
-              style={{ height: rowHeight, transform: `translateY(${(start + offset) * rowHeight}px)`, paddingLeft: depth * indent + 8 }}
+              className={`svt-row svt-row-radius-${rowRadius}${selected ? " svt-row-selected" : ""}${activeId === node.id ? " svt-row-active" : ""}${node.disabled ? " svt-row-disabled" : ""}${dropPosition ? ` svt-drop-${dropPosition}` : ""}`}
+              style={{ height: rowHeight, transform: `translateY(${(start + offset) * rowHeight + viewportPadding}px)`, paddingLeft: depth * indent + 8 }}
               onMouseDown={() => setActiveId(node.id)}
               onClick={() => { tree.toggleSelected(node.id); onActivate?.(node.id); }}
               onDragStart={event => {
