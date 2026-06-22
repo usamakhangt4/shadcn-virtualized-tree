@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 
 export default defineConfig({
   root: resolve(__dirname),
+  base: "/shadcn-virtualized-tree/",
   plugins: [react()],
   resolve: { alias: { "shadcn-virtualized-tree": resolve(__dirname, "../src/index.ts") } },
   build: { outDir: resolve(__dirname, "../playground-dist"), emptyOutDir: true },
