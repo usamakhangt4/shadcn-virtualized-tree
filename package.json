@@ -2,6 +2,26 @@
   "name": "shadcn-virtualized-tree",
   "version": "0.1.0",
   "description": "Headless and styled virtualized tree components for React",
+  "license": "MIT",
+  "author": "Muhammad Usama Bin Akhtar Khan",
+  "homepage": "https://usamakhangt4.github.io/shadcn-virtualized-tree/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/usamakhangt4/shadcn-virtualized-tree.git"
+  },
+  "bugs": {
+    "url": "https://github.com/usamakhangt4/shadcn-virtualized-tree/issues"
+  },
+  "keywords": [
+    "react",
+    "tree",
+    "tree-view",
+    "virtualized",
+    "shadcn",
+    "typescript",
+    "drag-and-drop",
+    "accessibility"
+  ],
   "type": "module",
   "sideEffects": false,
   "files": [
@@ -23,9 +43,13 @@
     "dev": "tsup --watch",
     "playground": "vite --config playground/vite.config.ts",
     "playground:build": "vite build --config playground/vite.config.ts",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build && npm run playground:build",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "peerDependencies": {
     "react": ">=18",
