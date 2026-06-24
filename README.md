@@ -26,9 +26,24 @@ A typed React tree library with a headless state hook and an optional virtualize
 
 ## Installation
 
+### Install from npm
+
+```bash
+npm install shadcn-virtualized-tree
+```
+
+Import the hook/component and the default styles:
+
+```tsx
+import { useTree, VirtualizedTree } from "shadcn-virtualized-tree";
+import "shadcn-virtualized-tree/styles.css";
+```
+
+The styled component includes Lucide icons as defaults. They can be replaced completely through icon slots.
+
 ### Install from GitHub
 
-Until the first npm registry release is available, install the package directly from GitHub:
+You can also install directly from GitHub if you want the latest unreleased changes:
 
 ```bash
 npm install github:usamakhangt4/shadcn-virtualized-tree#main
@@ -46,16 +61,6 @@ For reproducible production installs, pin a release tag or commit instead of `ma
 ```bash
 npm install github:usamakhangt4/shadcn-virtualized-tree#COMMIT_SHA
 ```
-
-### Install from npm
-
-The package is not published to the npm registry yet. After the first release, installation will be:
-
-```bash
-npm install shadcn-virtualized-tree
-```
-
-The styled component includes Lucide icons as defaults. They can be replaced completely through icon slots.
 
 ## Quick start
 
