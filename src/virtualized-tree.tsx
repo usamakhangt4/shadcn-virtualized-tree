@@ -129,7 +129,7 @@ export function VirtualizedTree<T>({
       else if (current.parentId) setActiveId(current.parentId);
     } else if (event.key === "Enter" || event.key === " ") {
       tree.toggleSelected(current.node.id);
-      onActivate?.(current.node.id);
+      if (!current.node.disabled) onActivate?.(current.node.id);
     } else return;
     event.preventDefault();
   };
@@ -140,7 +140,7 @@ export function VirtualizedTree<T>({
       role="tree"
       tabIndex={0}
       aria-activedescendant={activeId ? `${reactId}-${activeId}` : undefined}
-      aria-multiselectable
+      aria-multiselectable={tree.selectionMode === "multiple" ? true : undefined}
       className={["svt-viewport", className].filter(Boolean).join(" ")}
       style={{ height, ...themeStyle, ...style }}
       onScroll={event => setScrollTop(event.currentTarget.scrollTop)}
@@ -172,7 +172,7 @@ export function VirtualizedTree<T>({
               className={`svt-row svt-row-radius-${rowRadius}${selected ? " svt-row-selected" : ""}${activeId === node.id ? " svt-row-active" : ""}${node.disabled ? " svt-row-disabled" : ""}${dropPosition ? ` svt-drop-${dropPosition}` : ""}`}
               style={{ height: rowHeight, transform: `translateY(${(start + offset) * rowHeight + viewportPadding}px)`, paddingLeft: depth * indent + 8 }}
               onMouseDown={() => setActiveId(node.id)}
-              onClick={() => { tree.toggleSelected(node.id); onActivate?.(node.id); }}
+              onClick={() => { tree.toggleSelected(node.id); if (!node.disabled) onActivate?.(node.id); }}
               onDragStart={event => {
                 setDraggedId(node.id);
                 event.dataTransfer.effectAllowed = "move";

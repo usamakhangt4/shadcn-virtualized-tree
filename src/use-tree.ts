@@ -103,6 +103,7 @@ export function useTree<T = unknown>(options: UseTreeOptions<T>) {
     flatNodes,
     nodeMap: indexes.nodeMap,
     parentMap: indexes.parentMap,
+    selectionMode,
     expandedIds,
     selectedIds,
     indeterminateIds,

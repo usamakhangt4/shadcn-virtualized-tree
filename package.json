@@ -23,7 +23,9 @@
     "accessibility"
   ],
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "files": [
     "dist"
   ],
@@ -58,6 +60,9 @@
   "dependencies": {
     "lucide-react": "^0.468.0"
   },
+  "overrides": {
+    "esbuild": "0.27.2"
+  },
   "devDependencies": {
     "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.3",
@@ -70,6 +75,6 @@
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vite": "^6.0.5",
-    "vitest": "^2.1.8"
+    "vitest": "^4.1.9"
   }
 }
